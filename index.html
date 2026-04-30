@@ -1,1 +1,249 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Visor de galería autoplay</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
 
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: #000;
+        color: #fff;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        min-height: 100vh;
+        overflow: hidden;
+      }
+
+      .viewer {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .media {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background: #000;
+      }
+
+      .controls {
+        position: absolute;
+        left: 50%;
+        bottom: 1.25rem;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        background: rgba(15, 15, 15, 0.7);
+        backdrop-filter: blur(6px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 999px;
+        padding: 0.5rem 0.75rem;
+      }
+
+      button,
+      select {
+        border: none;
+        border-radius: 999px;
+        padding: 0.45rem 0.85rem;
+        background: rgba(255, 255, 255, 0.14);
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      button[aria-pressed="true"] {
+        background: #1f6feb;
+      }
+
+      button:hover,
+      select:hover {
+        background: rgba(255, 255, 255, 0.23);
+      }
+
+      select {
+        appearance: none;
+        padding-right: 1.5rem;
+      }
+
+      .selector-wrapper {
+        position: relative;
+      }
+
+      .selector-wrapper::after {
+        content: "▾";
+        position: absolute;
+        right: 0.65rem;
+        top: 50%;
+        transform: translateY(-53%);
+        pointer-events: none;
+        font-size: 0.75rem;
+        color: #d6d6d6;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="viewer" aria-label="Visor de galería en autoplay">
+      <img id="image-media" class="media" alt="Elemento de galería" />
+      <video id="video-media" class="media" muted playsinline style="display: none"></video>
+
+      <div class="controls" role="group" aria-label="Controles de autoplay">
+        <button id="play-toggle" type="button" aria-pressed="true">Pausa</button>
+        <button id="shuffle-toggle" type="button" aria-pressed="false">Aleatorio: OFF</button>
+        <div class="selector-wrapper">
+          <select id="seconds-select" aria-label="Segundos por imagen">
+            <option value="2">2 s</option>
+            <option value="3">3 s</option>
+            <option value="5" selected>5 s</option>
+            <option value="8">8 s</option>
+            <option value="10">10 s</option>
+          </select>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const galleryItems = [
+        {
+          type: "image",
+          src: "https://images.unsplash.com/photo-1470770903676-69b98201ea1c?auto=format&fit=crop&w=1600&q=80",
+        },
+        {
+          type: "image",
+          src: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1600&q=80",
+        },
+        {
+          type: "video",
+          src: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+        },
+        {
+          type: "image",
+          src: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80",
+        },
+      ];
+
+      const imageMedia = document.getElementById("image-media");
+      const videoMedia = document.getElementById("video-media");
+      const playToggle = document.getElementById("play-toggle");
+      const shuffleToggle = document.getElementById("shuffle-toggle");
+      const secondsSelect = document.getElementById("seconds-select");
+
+      let currentIndex = 0;
+      let isPlaying = true;
+      let isShuffleEnabled = false;
+      let slideDurationMs = Number(secondsSelect.value) * 1000;
+      let timeoutId;
+
+      const setPlayButtonText = () => {
+        playToggle.textContent = isPlaying ? "Pausa" : "Play";
+        playToggle.setAttribute("aria-pressed", String(isPlaying));
+      };
+
+      const setShuffleButtonText = () => {
+        shuffleToggle.textContent = `Aleatorio: ${isShuffleEnabled ? "ON" : "OFF"}`;
+        shuffleToggle.setAttribute("aria-pressed", String(isShuffleEnabled));
+      };
+
+      const getNextIndex = () => {
+        if (galleryItems.length <= 1) return currentIndex;
+        if (!isShuffleEnabled) return (currentIndex + 1) % galleryItems.length;
+
+        let nextIndex = currentIndex;
+        while (nextIndex === currentIndex) {
+          nextIndex = Math.floor(Math.random() * galleryItems.length);
+        }
+        return nextIndex;
+      };
+
+      const clearAutoplayTimeout = () => {
+        window.clearTimeout(timeoutId);
+      };
+
+      const scheduleNext = () => {
+        clearAutoplayTimeout();
+        if (!isPlaying) return;
+
+        const currentItem = galleryItems[currentIndex];
+        const duration = currentItem.type === "video" ? Math.max(videoMedia.duration * 1000 || 0, 500) : slideDurationMs;
+
+        timeoutId = window.setTimeout(() => {
+          showItem(getNextIndex());
+        }, duration);
+      };
+
+      const showItem = (index) => {
+        currentIndex = index;
+        const item = galleryItems[index];
+
+        videoMedia.pause();
+        videoMedia.removeAttribute("src");
+        videoMedia.load();
+
+        if (item.type === "image") {
+          videoMedia.style.display = "none";
+          imageMedia.style.display = "block";
+          imageMedia.src = item.src;
+          scheduleNext();
+          return;
+        }
+
+        imageMedia.style.display = "none";
+        videoMedia.style.display = "block";
+        videoMedia.src = item.src;
+        videoMedia.currentTime = 0;
+        videoMedia.play().catch(() => {});
+
+        const onLoadedMeta = () => {
+          scheduleNext();
+          videoMedia.removeEventListener("loadedmetadata", onLoadedMeta);
+        };
+
+        videoMedia.addEventListener("loadedmetadata", onLoadedMeta);
+      };
+
+      playToggle.addEventListener("click", () => {
+        isPlaying = !isPlaying;
+        setPlayButtonText();
+
+        if (!isPlaying) {
+          clearAutoplayTimeout();
+          videoMedia.pause();
+          return;
+        }
+
+        if (galleryItems[currentIndex].type === "video") {
+          videoMedia.play().catch(() => {});
+        }
+        scheduleNext();
+      });
+
+      shuffleToggle.addEventListener("click", () => {
+        isShuffleEnabled = !isShuffleEnabled;
+        setShuffleButtonText();
+      });
+
+      secondsSelect.addEventListener("change", () => {
+        slideDurationMs = Number(secondsSelect.value) * 1000;
+        if (galleryItems[currentIndex].type === "image" && isPlaying) {
+          scheduleNext();
+        }
+      });
+
+      setPlayButtonText();
+      setShuffleButtonText();
+      showItem(currentIndex);
+    </script>
+  </body>
+</html>
