@@ -8,6 +8,8 @@ export const ShirtOwnershipStatus = Object.freeze({
   PLANNED: 'planned',
 });
 
+const TEAM_FALLBACK_LABEL = 'Sin equipo/selección';
+
 /**
  * @typedef {Object} Shirt
  * @property {string} id
@@ -209,6 +211,7 @@ export const queries = {
    * En qué campeonatos se disputó una camiseta.
    * @param {Shirt} shirt
    * @param {Championship[]} championships
+   * @returns {Championship[]}
    */
   championshipsByShirt(shirt, championships) {
     return championships.filter((championship) => shirt.championshipIds.includes(championship.id));
@@ -218,9 +221,51 @@ export const queries = {
    * Qué títulos ganó una camiseta.
    * @param {Shirt} shirt
    * @param {Title[]} titles
+   * @returns {Title[]}
    */
   titlesByShirt(shirt, titles) {
     return titles.filter((title) => shirt.titleIds.includes(title.id));
+  },
+
+  /**
+   * Qué eventos adicionales se asocian a una camiseta.
+   * @param {Shirt} shirt
+   * @param {Event[]} events
+   * @returns {Event[]}
+   */
+  eventsByShirt(shirt, events) {
+    return events.filter((event) => shirt.extraEventIds.includes(event.id));
+  },
+
+  /**
+   * Construye un view model de camiseta listo para UI.
+   * @param {Shirt} shirt
+   * @param {typeof schema} schema
+   * @returns {ShirtViewModel}
+   */
+  buildShirtViewModel(shirt, schema) {
+    const team = schema.teams.find((candidate) => candidate.id === shirt.teamId) ?? null;
+    const nationalTeam = schema.nationalTeams.find((candidate) => candidate.id === shirt.nationalTeamId) ?? null;
+
+    return {
+      player: schema.players.find((player) => player.id === shirt.playerId) ?? null,
+      team: team ?? (!nationalTeam ? { id: null, name: TEAM_FALLBACK_LABEL } : null),
+      nationalTeam,
+      number: schema.numbers.find((number) => number.id === shirt.numberId) ?? null,
+      championships: this.championshipsByShirt(shirt, schema.championships) ?? [],
+      titles: this.titlesByShirt(shirt, schema.titles) ?? [],
+      events: this.eventsByShirt(shirt, schema.events) ?? [],
+      ownershipStatus: shirt.ownershipStatus,
+    };
+  },
+
+  /**
+   * Construye todas las tarjetas de camisetas listas para UI.
+   * @param {typeof schema} schema
+   * @returns {ShirtViewModel[]}
+   */
+  buildAllShirtCards(schema) {
+    return schema.shirts.map((shirt) => this.buildShirtViewModel(shirt, schema));
   },
 
   /**
