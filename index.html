@@ -3,247 +3,172 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Visor de galería autoplay</title>
+    <title>Casacas</title>
     <style>
-      :root {
-        color-scheme: dark;
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
+      :root { color-scheme: dark; }
+      * { box-sizing: border-box; }
       body {
         margin: 0;
-        background: #000;
+        background: #0b1020;
         color: #fff;
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        min-height: 100vh;
-        overflow: hidden;
       }
-
-      .viewer {
-        position: relative;
-        width: 100vw;
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+      main { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+      .shirt-card {
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.16);
+        border-radius: 14px;
+        padding: 1rem;
       }
-
-      .media {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        background: #000;
-      }
-
-      .controls {
-        position: absolute;
-        left: 50%;
-        bottom: 1.25rem;
-        transform: translateX(-50%);
-        display: flex;
-        gap: 0.75rem;
-        align-items: center;
-        background: rgba(15, 15, 15, 0.7);
-        backdrop-filter: blur(6px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 999px;
-        padding: 0.5rem 0.75rem;
-      }
-
-      button,
-      select {
-        border: none;
-        border-radius: 999px;
-        padding: 0.45rem 0.85rem;
-        background: rgba(255, 255, 255, 0.14);
+      .shirt-card h3 { margin: 0 0 0.25rem; }
+      .shirt-events { margin: 0.75rem 0; padding-left: 1rem; }
+      button, input {
+        border: 1px solid rgba(255,255,255,0.22);
+        border-radius: 10px;
+        background: rgba(255,255,255,0.12);
         color: #fff;
-        font-weight: 600;
-        cursor: pointer;
+        padding: 0.45rem 0.65rem;
       }
-
-      button[aria-pressed="true"] {
-        background: #1f6feb;
-      }
-
-      button:hover,
-      select:hover {
-        background: rgba(255, 255, 255, 0.23);
-      }
-
-      select {
-        appearance: none;
-        padding-right: 1.5rem;
-      }
-
-      .selector-wrapper {
-        position: relative;
-      }
-
-      .selector-wrapper::after {
-        content: "▾";
-        position: absolute;
-        right: 0.65rem;
-        top: 50%;
-        transform: translateY(-53%);
-        pointer-events: none;
-        font-size: 0.75rem;
-        color: #d6d6d6;
-      }
+      .inline-form { margin-top: 0.65rem; display: flex; flex-direction: column; gap: 0.45rem; }
+      .actions { display: flex; gap: 0.45rem; }
+      .error { color: #ff8f8f; min-height: 1.1em; margin: 0; font-size: 0.9rem; }
     </style>
   </head>
   <body>
-    <main class="viewer" aria-label="Visor de galería en autoplay">
-      <img id="image-media" class="media" alt="Elemento de galería" />
-      <video id="video-media" class="media" muted playsinline style="display: none"></video>
-
-      <div class="controls" role="group" aria-label="Controles de autoplay">
-        <button id="play-toggle" type="button" aria-pressed="true">Pausa</button>
-        <button id="shuffle-toggle" type="button" aria-pressed="false">Aleatorio: OFF</button>
-        <div class="selector-wrapper">
-          <select id="seconds-select" aria-label="Segundos por imagen">
-            <option value="2">2 s</option>
-            <option value="3">3 s</option>
-            <option value="5" selected>5 s</option>
-            <option value="8">8 s</option>
-            <option value="10">10 s</option>
-          </select>
-        </div>
-      </div>
+    <main>
+      <h1>Camisetas</h1>
+      <div id="shirts-list" class="grid" aria-live="polite"></div>
     </main>
 
     <script>
-      const galleryItems = [
-        {
-          type: "image",
-          src: "https://images.unsplash.com/photo-1470770903676-69b98201ea1c?auto=format&fit=crop&w=1600&q=80",
-        },
-        {
-          type: "image",
-          src: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1600&q=80",
-        },
-        {
-          type: "video",
-          src: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
-        },
-        {
-          type: "image",
-          src: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80",
-        },
-      ];
-
-      const imageMedia = document.getElementById("image-media");
-      const videoMedia = document.getElementById("video-media");
-      const playToggle = document.getElementById("play-toggle");
-      const shuffleToggle = document.getElementById("shuffle-toggle");
-      const secondsSelect = document.getElementById("seconds-select");
-
-      let currentIndex = 0;
-      let isPlaying = true;
-      let isShuffleEnabled = false;
-      let slideDurationMs = Number(secondsSelect.value) * 1000;
-      let timeoutId;
-
-      const setPlayButtonText = () => {
-        playToggle.textContent = isPlaying ? "Pausa" : "Play";
-        playToggle.setAttribute("aria-pressed", String(isPlaying));
+      const schema = {
+        shirts: [
+          { id: "shirt-1", season: "2023/24", player: "Messi", extraEventIds: ["event-1"] },
+          { id: "shirt-2", season: "2008/09", player: "Iniesta", extraEventIds: [] },
+        ],
+        events: [{ id: "event-1", name: "Debut en final" }],
       };
 
-      const setShuffleButtonText = () => {
-        shuffleToggle.textContent = `Aleatorio: ${isShuffleEnabled ? "ON" : "OFF"}`;
-        shuffleToggle.setAttribute("aria-pressed", String(isShuffleEnabled));
-      };
+      const uiStateByShirt = {};
+      const shirtsList = document.getElementById("shirts-list");
 
-      const getNextIndex = () => {
-        if (galleryItems.length <= 1) return currentIndex;
-        if (!isShuffleEnabled) return (currentIndex + 1) % galleryItems.length;
-
-        let nextIndex = currentIndex;
-        while (nextIndex === currentIndex) {
-          nextIndex = Math.floor(Math.random() * galleryItems.length);
+      const createUniqueEventId = () => {
+        if (typeof crypto !== "undefined" && crypto.randomUUID) {
+          return `event-${crypto.randomUUID()}`;
         }
-        return nextIndex;
+        return `event-${Date.now()}-${Math.floor(Math.random() * 1_000_000)}`;
       };
 
-      const clearAutoplayTimeout = () => {
-        window.clearTimeout(timeoutId);
+      const getEventsForShirt = (shirt) =>
+        shirt.extraEventIds
+          .map((eventId) => schema.events.find((event) => event.id === eventId))
+          .filter(Boolean);
+
+      const renderShirtCard = (shirtId) => {
+        const shirt = schema.shirts.find((item) => item.id === shirtId);
+        if (!shirt) return;
+
+        const state = uiStateByShirt[shirt.id] ?? { formOpen: false, error: "" };
+        uiStateByShirt[shirt.id] = state;
+
+        const currentCard = shirtsList.querySelector(`[data-shirt-id="${shirt.id}"]`);
+        const card = document.createElement("article");
+        card.className = "shirt-card";
+        card.dataset.shirtId = shirt.id;
+
+        const events = getEventsForShirt(shirt);
+        card.innerHTML = `
+          <h3>${shirt.player}</h3>
+          <p>Temporada: ${shirt.season}</p>
+          <strong>Acontecimientos</strong>
+          <ul class="shirt-events">
+            ${events.length ? events.map((event) => `<li>${event.name}</li>`).join("") : "<li>Sin acontecimientos</li>"}
+          </ul>
+          <button type="button" data-action="open-form">Añadir acontecimiento</button>
+          ${state.formOpen
+            ? `<form class="inline-form" data-action="add-event-form">
+                <input name="eventName" type="text" placeholder="Nombre del acontecimiento" autocomplete="off" />
+                <div class="actions">
+                  <button type="submit">Guardar</button>
+                  <button type="button" data-action="cancel-form">Cancelar</button>
+                </div>
+                <p class="error">${state.error || ""}</p>
+              </form>`
+            : ""}
+        `;
+
+        if (currentCard) {
+          currentCard.replaceWith(card);
+        } else {
+          shirtsList.appendChild(card);
+        }
       };
 
-      const scheduleNext = () => {
-        clearAutoplayTimeout();
-        if (!isPlaying) return;
-
-        const currentItem = galleryItems[currentIndex];
-        const duration = currentItem.type === "video" ? Math.max(videoMedia.duration * 1000 || 0, 500) : slideDurationMs;
-
-        timeoutId = window.setTimeout(() => {
-          showItem(getNextIndex());
-        }, duration);
+      const renderAllShirts = () => {
+        shirtsList.innerHTML = "";
+        schema.shirts.forEach((shirt) => renderShirtCard(shirt.id));
       };
 
-      const showItem = (index) => {
-        currentIndex = index;
-        const item = galleryItems[index];
+      shirtsList.addEventListener("click", (event) => {
+        const card = event.target.closest(".shirt-card");
+        if (!card) return;
 
-        videoMedia.pause();
-        videoMedia.removeAttribute("src");
-        videoMedia.load();
+        const shirtId = card.dataset.shirtId;
+        const state = uiStateByShirt[shirtId] ?? { formOpen: false, error: "" };
+        uiStateByShirt[shirtId] = state;
 
-        if (item.type === "image") {
-          videoMedia.style.display = "none";
-          imageMedia.style.display = "block";
-          imageMedia.src = item.src;
-          scheduleNext();
+        const action = event.target.dataset.action;
+        if (action === "open-form") {
+          state.formOpen = true;
+          state.error = "";
+          renderShirtCard(shirtId);
+        }
+
+        if (action === "cancel-form") {
+          state.formOpen = false;
+          state.error = "";
+          renderShirtCard(shirtId);
+        }
+      });
+
+      shirtsList.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const form = event.target;
+        if (form.dataset.action !== "add-event-form") return;
+
+        const card = form.closest(".shirt-card");
+        const shirtId = card.dataset.shirtId;
+        const shirt = schema.shirts.find((item) => item.id === shirtId);
+        const state = uiStateByShirt[shirtId];
+        const rawName = form.eventName.value;
+        const eventName = rawName.trim();
+
+        if (!eventName) {
+          state.error = "El nombre es obligatorio.";
+          renderShirtCard(shirtId);
           return;
         }
 
-        imageMedia.style.display = "none";
-        videoMedia.style.display = "block";
-        videoMedia.src = item.src;
-        videoMedia.currentTime = 0;
-        videoMedia.play().catch(() => {});
+        const duplicate = getEventsForShirt(shirt)
+          .some((shirtEvent) => shirtEvent.name.toLowerCase() === eventName.toLowerCase());
 
-        const onLoadedMeta = () => {
-          scheduleNext();
-          videoMedia.removeEventListener("loadedmetadata", onLoadedMeta);
-        };
-
-        videoMedia.addEventListener("loadedmetadata", onLoadedMeta);
-      };
-
-      playToggle.addEventListener("click", () => {
-        isPlaying = !isPlaying;
-        setPlayButtonText();
-
-        if (!isPlaying) {
-          clearAutoplayTimeout();
-          videoMedia.pause();
+        if (duplicate) {
+          state.error = "Este acontecimiento ya existe para esta camiseta.";
+          renderShirtCard(shirtId);
           return;
         }
 
-        if (galleryItems[currentIndex].type === "video") {
-          videoMedia.play().catch(() => {});
-        }
-        scheduleNext();
+        const newEvent = { id: createUniqueEventId(), name: eventName };
+        schema.events.push(newEvent);
+        shirt.extraEventIds.push(newEvent.id);
+
+        state.formOpen = false;
+        state.error = "";
+        renderShirtCard(shirtId);
       });
 
-      shuffleToggle.addEventListener("click", () => {
-        isShuffleEnabled = !isShuffleEnabled;
-        setShuffleButtonText();
-      });
-
-      secondsSelect.addEventListener("change", () => {
-        slideDurationMs = Number(secondsSelect.value) * 1000;
-        if (galleryItems[currentIndex].type === "image" && isPlaying) {
-          scheduleNext();
-        }
-      });
-
-      setPlayButtonText();
-      setShuffleButtonText();
-      showItem(currentIndex);
+      renderAllShirts();
     </script>
   </body>
 </html>
