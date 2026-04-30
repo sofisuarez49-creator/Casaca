@@ -10,233 +10,138 @@
         --bg: #062816;
         --bg-soft: #0d3d23;
         --card: #125632;
-        --card-soft: #1b6b3f;
         --text: #eefaf2;
         --muted: #c9dfcf;
-        --gold: #d4ad4f;
         --gold-soft: #f1deaa;
       }
 
-      * {
-        box-sizing: border-box;
-      }
+      * { box-sizing: border-box; }
 
       body {
         margin: 0;
         min-height: 100vh;
         font-family: "Segoe UI", system-ui, sans-serif;
         color: var(--text);
-        background:
-          radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.06), transparent 45%),
-          repeating-linear-gradient(
-            90deg,
-            rgba(255, 255, 255, 0.02),
-            rgba(255, 255, 255, 0.02) 2px,
-            transparent 2px,
-            transparent 72px
-          ),
-          linear-gradient(180deg, #052112 0%, var(--bg) 32%, #03150c 100%);
+        background: linear-gradient(180deg, #052112 0%, var(--bg) 40%, #03150c 100%);
       }
 
       .app {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 1.5rem;
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        min-height: 100vh;
       }
 
-      .app-header {
-        background: linear-gradient(120deg, rgba(16, 90, 50, 0.92), rgba(8, 52, 28, 0.95));
-        border: 1px solid rgba(241, 222, 170, 0.35);
-        border-radius: 1rem;
-        padding: 1.5rem;
-        margin-bottom: 1rem;
+      .sidebar {
+        border-right: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(8, 52, 28, 0.9);
+        padding: 1.5rem 1rem;
       }
 
-      h1 {
-        margin: 0;
-        font-size: clamp(1.5rem, 2vw, 2.1rem);
+      .sidebar h1 {
+        margin: 0 0 1.25rem;
+        font-size: 1.15rem;
         color: var(--gold-soft);
-        letter-spacing: 0.02em;
       }
 
-      .resume {
-        margin-top: 0.75rem;
-        color: var(--muted);
-        line-height: 1.45;
-      }
-
-      .filters {
+      .menu {
         display: flex;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-        align-items: center;
-        background: rgba(10, 47, 27, 0.92);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 0.9rem;
-        padding: 0.9rem;
-        margin-bottom: 1.15rem;
+        flex-direction: column;
+        gap: 0.6rem;
       }
 
-      .filters label {
-        font-size: 0.86rem;
-        color: var(--muted);
-      }
-
-      .filters select,
-      .filters input {
-        border: 1px solid rgba(241, 222, 170, 0.3);
+      .menu-btn {
+        width: 100%;
+        text-align: left;
+        border: 1px solid rgba(255, 255, 255, 0.15);
         background: var(--bg-soft);
         color: var(--text);
-        border-radius: 999px;
-        padding: 0.45rem 0.75rem;
-        min-width: 150px;
+        border-radius: 0.65rem;
+        padding: 0.75rem 0.85rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        cursor: pointer;
       }
 
-      .cards {
-        display: grid;
-        gap: 1rem;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      .menu-btn.active {
+        background: var(--card);
+        border-color: rgba(241, 222, 170, 0.55);
       }
 
-      .card {
-        background: linear-gradient(180deg, var(--card-soft), var(--card));
+      .content {
+        padding: 2rem;
+      }
+
+      .view {
+        display: none;
+        background: rgba(13, 61, 35, 0.75);
         border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 1rem;
-        overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+        min-height: 260px;
+        padding: 1.25rem;
       }
 
-      .card img {
-        width: 100%;
-        aspect-ratio: 4 / 3;
-        object-fit: cover;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      }
+      .view.active { display: block; }
 
-      .card-body {
-        padding: 0.95rem;
-      }
+      .view h2 { margin-top: 0; color: var(--gold-soft); }
+      .placeholder { color: var(--muted); }
 
-      .card h2 {
-        margin: 0;
-        font-size: 1.2rem;
+      @media (max-width: 800px) {
+        .app { grid-template-columns: 1fr; }
+        .sidebar { border-right: none; border-bottom: 1px solid rgba(255, 255, 255, 0.12); }
       }
-
-      .meta {
-        margin-top: 0.7rem;
-        display: grid;
-        gap: 0.45rem;
-      }
-
-      .line {
-        display: flex;
-        justify-content: space-between;
-        gap: 0.8rem;
-        font-size: 0.93rem;
-      }
-
-      .line strong {
-        color: var(--gold-soft);
-        font-weight: 700;
-      }
-
-      .shield {
-        display: inline-block;
-        padding: 0.28rem 0.65rem;
-        border-radius: 0.65rem 0.65rem 0.65rem 0.2rem;
-        background: linear-gradient(145deg, #b58a26, var(--gold));
-        color: #162712;
-        font-size: 0.78rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-      }
-
-      .events {
-        margin-top: 0.8rem;
-        padding-top: 0.7rem;
-        border-top: 1px dashed rgba(255, 255, 255, 0.18);
-        color: var(--muted);
-        font-size: 0.88rem;
-      }
-      .inline-form { margin-top: 0.65rem; display: flex; flex-direction: column; gap: 0.45rem; }
-      .actions { display: flex; gap: 0.45rem; }
-      .error { color: #ff8f8f; min-height: 1.1em; margin: 0; font-size: 0.9rem; }
     </style>
   </head>
   <body>
     <main class="app" aria-label="Aplicación de colección de camisetas">
-      <header class="app-header">
-        <h1>Colección histórica de camisetas</h1>
-        <p class="resume">
-          Archivo personal de camisetas icónicas de clubes y selecciones: 24 camisetas, 14 compradas y 10 planificadas,
-          con foco en temporadas campeonas y jugadores emblemáticos.
-        </p>
-      </header>
+      <aside class="sidebar" aria-label="Menú lateral">
+        <h1>Menú</h1>
+        <nav class="menu" aria-label="Navegación principal">
+          <button class="menu-btn active" data-view="camisetas">CAMISETAS</button>
+          <button class="menu-btn" data-view="jugadores">JUGADORES</button>
+          <button class="menu-btn" data-view="equipos">EQUIPOS</button>
+          <button class="menu-btn" data-view="competencias">COMPETENCIAS</button>
+        </nav>
+      </aside>
 
-      <section class="filters" aria-label="Barra de filtros de camisetas">
-        <label>
-          Estado
-          <select aria-label="Filtrar por estado de compra">
-            <option>Todas</option>
-            <option>Comprada</option>
-            <option>Planificada</option>
-          </select>
-        </label>
-        <label>
-          Competición
-          <select aria-label="Filtrar por competición">
-            <option>Todas</option>
-            <option>Champions League</option>
-            <option>Copa del Mundo</option>
-            <option>Liga local</option>
-          </select>
-        </label>
-        <label>
-          Buscar jugador
-          <input type="search" placeholder="Ej: Messi" aria-label="Buscar camiseta por jugador" />
-        </label>
-      </section>
-
-      <section class="cards" aria-label="Grid de tarjetas de camisetas">
-        <article class="card" aria-label="Tarjeta de camiseta de Lionel Messi">
-          <img src="https://images.unsplash.com/photo-1517466787929-bc90951d0974?auto=format&fit=crop&w=1200&q=80" alt="Camiseta azulgrana en exposición" />
-          <div class="card-body">
-            <header>
-              <h2>Camiseta</h2>
-              <span class="shield">Comprada</span>
-            </header>
-            <div class="meta">
-              <p class="line"><span>Jugador</span><strong>Lionel Messi</strong></p>
-              <p class="line"><span>Equipo / selección</span><strong>FC Barcelona</strong></p>
-              <p class="line"><span>Dorsal</span><strong>10</strong></p>
-              <p class="line"><span>Temporada</span><strong>2010/2011</strong></p>
-              <p class="line"><span>Campeonatos</span><strong>Champions + Liga</strong></p>
-              <p class="line"><span>Títulos</span><strong>2 títulos oficiales</strong></p>
-            </div>
-            <p class="events">Acontecimientos extra: final de Wembley 2011, balón de oro del jugador ese año.</p>
-          </div>
+      <section class="content" aria-live="polite">
+        <article id="camisetas" class="view active">
+          <h2>CAMISETAS</h2>
+          <p class="placeholder">Pantalla vacía por ahora.</p>
         </article>
 
-        <article class="card" aria-label="Tarjeta de camiseta de Kylian Mbappé">
-          <img src="https://images.unsplash.com/photo-1552667466-07770ae110d0?auto=format&fit=crop&w=1200&q=80" alt="Camiseta blanca de selección en percha" />
-          <div class="card-body">
-            <header>
-              <h2>Camiseta</h2>
-              <span class="shield">Planificada</span>
-            </header>
-            <div class="meta">
-              <p class="line"><span>Jugador</span><strong>Kylian Mbappé</strong></p>
-              <p class="line"><span>Equipo / selección</span><strong>Francia</strong></p>
-              <p class="line"><span>Dorsal</span><strong>10</strong></p>
-              <p class="line"><span>Temporada</span><strong>Mundial 2022</strong></p>
-              <p class="line"><span>Campeonatos</span><strong>Subcampeón Copa del Mundo</strong></p>
-              <p class="line"><span>Títulos</span><strong>Botín de Oro del torneo</strong></p>
-            </div>
-            <p class="events">Acontecimientos extra: hat-trick en final mundialista y liderazgo ofensivo del torneo.</p>
-          </div>
+        <article id="jugadores" class="view">
+          <h2>JUGADORES</h2>
+          <p class="placeholder">Pantalla vacía por ahora.</p>
+        </article>
+
+        <article id="equipos" class="view">
+          <h2>EQUIPOS</h2>
+          <p class="placeholder">Pantalla vacía por ahora.</p>
+        </article>
+
+        <article id="competencias" class="view">
+          <h2>COMPETENCIAS</h2>
+          <p class="placeholder">Pantalla vacía por ahora.</p>
         </article>
       </section>
     </main>
+
+    <script>
+      const menuButtons = document.querySelectorAll('.menu-btn');
+      const views = document.querySelectorAll('.view');
+
+      menuButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const target = button.dataset.view;
+
+          menuButtons.forEach((item) => item.classList.remove('active'));
+          button.classList.add('active');
+
+          views.forEach((view) => {
+            view.classList.toggle('active', view.id === target);
+          });
+        });
+      });
+    </script>
   </body>
 </html>
