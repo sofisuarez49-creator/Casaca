@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Visor de galería autoplay</title>
+    <title>Colección de camisetas</title>
     <style>
       :root {
         color-scheme: dark;
@@ -15,235 +15,232 @@
 
       body {
         margin: 0;
-        background: #000;
+        background: #0b0b0d;
         color: #fff;
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1.25rem;
+      }
+
+      h1 {
+        margin: 0 0 1rem;
+      }
+
+      .filters {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 0.75rem;
+        margin-bottom: 0.85rem;
+      }
+
+      input,
+      select {
+        width: 100%;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        padding: 0.6rem 0.7rem;
+        background: #141416;
+        color: #fff;
+      }
+
+      .result-count {
+        margin: 0 0 1rem;
+        color: #cfd3dc;
+      }
+
+      .grid {
+        display: grid;
+        gap: 0.9rem;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+
+      .card {
+        background: #151518;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 12px;
         overflow: hidden;
       }
 
-      .viewer {
-        position: relative;
-        width: 100vw;
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .media {
+      .card img {
         width: 100%;
-        height: 100%;
-        object-fit: contain;
-        background: #000;
+        height: 150px;
+        object-fit: cover;
+        display: block;
       }
 
-      .controls {
-        position: absolute;
-        left: 50%;
-        bottom: 1.25rem;
-        transform: translateX(-50%);
-        display: flex;
-        gap: 0.75rem;
-        align-items: center;
-        background: rgba(15, 15, 15, 0.7);
-        backdrop-filter: blur(6px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 999px;
-        padding: 0.5rem 0.75rem;
+      .card-content {
+        padding: 0.75rem;
       }
 
-      button,
-      select {
-        border: none;
-        border-radius: 999px;
-        padding: 0.45rem 0.85rem;
-        background: rgba(255, 255, 255, 0.14);
-        color: #fff;
-        font-weight: 600;
-        cursor: pointer;
-      }
-
-      button[aria-pressed="true"] {
-        background: #1f6feb;
-      }
-
-      button:hover,
-      select:hover {
-        background: rgba(255, 255, 255, 0.23);
-      }
-
-      select {
-        appearance: none;
-        padding-right: 1.5rem;
-      }
-
-      .selector-wrapper {
-        position: relative;
-      }
-
-      .selector-wrapper::after {
-        content: "▾";
-        position: absolute;
-        right: 0.65rem;
-        top: 50%;
-        transform: translateY(-53%);
-        pointer-events: none;
-        font-size: 0.75rem;
-        color: #d6d6d6;
+      .meta {
+        margin: 0.2rem 0;
+        color: #cfd3dc;
+        font-size: 0.9rem;
       }
     </style>
   </head>
   <body>
-    <main class="viewer" aria-label="Visor de galería en autoplay">
-      <img id="image-media" class="media" alt="Elemento de galería" />
-      <video id="video-media" class="media" muted playsinline style="display: none"></video>
-
-      <div class="controls" role="group" aria-label="Controles de autoplay">
-        <button id="play-toggle" type="button" aria-pressed="true">Pausa</button>
-        <button id="shuffle-toggle" type="button" aria-pressed="false">Aleatorio: OFF</button>
-        <div class="selector-wrapper">
-          <select id="seconds-select" aria-label="Segundos por imagen">
-            <option value="2">2 s</option>
-            <option value="3">3 s</option>
-            <option value="5" selected>5 s</option>
-            <option value="8">8 s</option>
-            <option value="10">10 s</option>
-          </select>
-        </div>
-      </div>
+    <main class="container">
+      <h1>Colección de camisetas</h1>
+      <section id="filters" class="filters" aria-label="Filtros de camisetas"></section>
+      <p id="result-count" class="result-count">0 camisetas encontradas</p>
+      <section id="cards-grid" class="grid" aria-live="polite"></section>
     </main>
 
     <script>
-      const galleryItems = [
+      const cards = [
         {
-          type: "image",
-          src: "https://images.unsplash.com/photo-1470770903676-69b98201ea1c?auto=format&fit=crop&w=1600&q=80",
+          id: "1",
+          image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=900&q=80",
+          player: "Lionel Messi",
+          team: "FC Barcelona",
+          number: "10",
+          championship: "LaLiga",
+          title: "Champions League",
+          status: "owned",
+          season: "2010/11",
         },
         {
-          type: "image",
-          src: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1600&q=80",
+          id: "2",
+          image: "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?auto=format&fit=crop&w=900&q=80",
+          player: "Kylian Mbappé",
+          team: "Francia",
+          number: "10",
+          championship: "Mundial",
+          title: "Copa del Mundo",
+          status: "planned",
+          season: "2018",
         },
         {
-          type: "video",
-          src: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
-        },
-        {
-          type: "image",
-          src: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80",
+          id: "3",
+          image: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&w=900&q=80",
+          player: "Cristiano Ronaldo",
+          team: "Real Madrid",
+          number: "7",
+          championship: "Champions League",
+          title: "Balón de Oro",
+          status: "owned",
+          season: "2016/17",
         },
       ];
 
-      const imageMedia = document.getElementById("image-media");
-      const videoMedia = document.getElementById("video-media");
-      const playToggle = document.getElementById("play-toggle");
-      const shuffleToggle = document.getElementById("shuffle-toggle");
-      const secondsSelect = document.getElementById("seconds-select");
-
-      let currentIndex = 0;
-      let isPlaying = true;
-      let isShuffleEnabled = false;
-      let slideDurationMs = Number(secondsSelect.value) * 1000;
-      let timeoutId;
-
-      const setPlayButtonText = () => {
-        playToggle.textContent = isPlaying ? "Pausa" : "Play";
-        playToggle.setAttribute("aria-pressed", String(isPlaying));
+      const state = {
+        filters: {
+          query: "",
+          status: "",
+          player: "",
+          team: "",
+          number: "",
+          championship: "",
+          title: "",
+        },
       };
 
-      const setShuffleButtonText = () => {
-        shuffleToggle.textContent = `Aleatorio: ${isShuffleEnabled ? "ON" : "OFF"}`;
-        shuffleToggle.setAttribute("aria-pressed", String(isShuffleEnabled));
+      const filtersContainer = document.getElementById("filters");
+      const cardsGrid = document.getElementById("cards-grid");
+      const resultCount = document.getElementById("result-count");
+
+      const uniqueOptions = (items, key) => [...new Set(items.map((item) => item[key]).filter(Boolean))].sort();
+
+      const makeSelect = (id, label, options) => {
+        const select = document.createElement("select");
+        select.id = id;
+        select.setAttribute("aria-label", label);
+        select.innerHTML = `<option value="">${label}</option>${options
+          .map((option) => `<option value="${option}">${option}</option>`)
+          .join("")}`;
+        return select;
       };
 
-      const getNextIndex = () => {
-        if (galleryItems.length <= 1) return currentIndex;
-        if (!isShuffleEnabled) return (currentIndex + 1) % galleryItems.length;
+      const renderFilterControls = () => {
+        filtersContainer.innerHTML = "";
 
-        let nextIndex = currentIndex;
-        while (nextIndex === currentIndex) {
-          nextIndex = Math.floor(Math.random() * galleryItems.length);
-        }
-        return nextIndex;
+        const searchInput = document.createElement("input");
+        searchInput.type = "search";
+        searchInput.id = "query-filter";
+        searchInput.placeholder = "Buscar texto libre";
+        searchInput.setAttribute("aria-label", "Buscar texto libre");
+        filtersContainer.appendChild(searchInput);
+
+        filtersContainer.appendChild(makeSelect("status-filter", "Estado", ["owned", "planned"]));
+        filtersContainer.appendChild(makeSelect("player-filter", "Jugador", uniqueOptions(cards, "player")));
+        filtersContainer.appendChild(makeSelect("team-filter", "Equipo/Selección", uniqueOptions(cards, "team")));
+        filtersContainer.appendChild(makeSelect("number-filter", "Dorsal", uniqueOptions(cards, "number")));
+        filtersContainer.appendChild(makeSelect("championship-filter", "Campeonato", uniqueOptions(cards, "championship")));
+        filtersContainer.appendChild(makeSelect("title-filter", "Título", uniqueOptions(cards, "title")));
+
+        const listeners = [
+          ["query-filter", "query", "input"],
+          ["status-filter", "status", "change"],
+          ["player-filter", "player", "change"],
+          ["team-filter", "team", "change"],
+          ["number-filter", "number", "change"],
+          ["championship-filter", "championship", "change"],
+          ["title-filter", "title", "change"],
+        ];
+
+        listeners.forEach(([id, field, event]) => {
+          document.getElementById(id).addEventListener(event, (e) => {
+            state.filters[field] = e.target.value.trim();
+            updateView();
+          });
+        });
       };
 
-      const clearAutoplayTimeout = () => {
-        window.clearTimeout(timeoutId);
+      const applyFilters = (allCards, filters) => {
+        const query = filters.query.toLowerCase();
+
+        return allCards.filter((card) => {
+          const freeTextMatch =
+            !query ||
+            [card.player, card.team, card.number, card.championship, card.title, card.season]
+              .join(" ")
+              .toLowerCase()
+              .includes(query);
+
+          return (
+            freeTextMatch &&
+            (!filters.status || card.status === filters.status) &&
+            (!filters.player || card.player === filters.player) &&
+            (!filters.team || card.team === filters.team) &&
+            (!filters.number || card.number === filters.number) &&
+            (!filters.championship || card.championship === filters.championship) &&
+            (!filters.title || card.title === filters.title)
+          );
+        });
       };
 
-      const scheduleNext = () => {
-        clearAutoplayTimeout();
-        if (!isPlaying) return;
-
-        const currentItem = galleryItems[currentIndex];
-        const duration = currentItem.type === "video" ? Math.max(videoMedia.duration * 1000 || 0, 500) : slideDurationMs;
-
-        timeoutId = window.setTimeout(() => {
-          showItem(getNextIndex());
-        }, duration);
+      const renderCards = (items) => {
+        cardsGrid.innerHTML = items
+          .map(
+            (card) => `
+            <article class="card">
+              <img src="${card.image}" alt="Camiseta de ${card.player}" loading="lazy" />
+              <div class="card-content">
+                <strong>${card.player} - #${card.number}</strong>
+                <p class="meta">${card.team} · ${card.season}</p>
+                <p class="meta">Estado: ${card.status}</p>
+                <p class="meta">Campeonato: ${card.championship}</p>
+                <p class="meta">Título: ${card.title}</p>
+              </div>
+            </article>
+          `
+          )
+          .join("");
       };
 
-      const showItem = (index) => {
-        currentIndex = index;
-        const item = galleryItems[index];
-
-        videoMedia.pause();
-        videoMedia.removeAttribute("src");
-        videoMedia.load();
-
-        if (item.type === "image") {
-          videoMedia.style.display = "none";
-          imageMedia.style.display = "block";
-          imageMedia.src = item.src;
-          scheduleNext();
-          return;
-        }
-
-        imageMedia.style.display = "none";
-        videoMedia.style.display = "block";
-        videoMedia.src = item.src;
-        videoMedia.currentTime = 0;
-        videoMedia.play().catch(() => {});
-
-        const onLoadedMeta = () => {
-          scheduleNext();
-          videoMedia.removeEventListener("loadedmetadata", onLoadedMeta);
-        };
-
-        videoMedia.addEventListener("loadedmetadata", onLoadedMeta);
+      const updateView = () => {
+        const filtered = applyFilters(cards, state.filters);
+        renderCards(filtered);
+        resultCount.textContent = `${filtered.length} camisetas encontradas`;
       };
 
-      playToggle.addEventListener("click", () => {
-        isPlaying = !isPlaying;
-        setPlayButtonText();
-
-        if (!isPlaying) {
-          clearAutoplayTimeout();
-          videoMedia.pause();
-          return;
-        }
-
-        if (galleryItems[currentIndex].type === "video") {
-          videoMedia.play().catch(() => {});
-        }
-        scheduleNext();
-      });
-
-      shuffleToggle.addEventListener("click", () => {
-        isShuffleEnabled = !isShuffleEnabled;
-        setShuffleButtonText();
-      });
-
-      secondsSelect.addEventListener("change", () => {
-        slideDurationMs = Number(secondsSelect.value) * 1000;
-        if (galleryItems[currentIndex].type === "image" && isPlaying) {
-          scheduleNext();
-        }
-      });
-
-      setPlayButtonText();
-      setShuffleButtonText();
-      showItem(currentIndex);
+      renderFilterControls();
+      updateView();
     </script>
   </body>
 </html>
