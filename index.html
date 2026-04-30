@@ -85,9 +85,76 @@
       .view h2 { margin-top: 0; color: var(--gold-soft); }
       .placeholder { color: var(--muted); }
 
+      .action-row {
+        display: flex;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+
+      .primary-btn {
+        border: 1px solid rgba(241, 222, 170, 0.55);
+        background: var(--card);
+        color: var(--text);
+        border-radius: 0.65rem;
+        padding: 0.65rem 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .shirt-form {
+        display: none;
+        margin-top: 0.5rem;
+        padding: 1rem;
+        border-radius: 0.75rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(6, 40, 22, 0.6);
+      }
+
+      .shirt-form.open {
+        display: block;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(180px, 1fr));
+        gap: 0.85rem;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+      }
+
+      .field.full {
+        grid-column: span 2;
+      }
+
+      label {
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+
+      input,
+      select {
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        background: rgba(0, 0, 0, 0.18);
+        color: var(--text);
+        border-radius: 0.55rem;
+        padding: 0.55rem 0.65rem;
+        font: inherit;
+      }
+
+      .help {
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
       @media (max-width: 800px) {
         .app { grid-template-columns: 1fr; }
         .sidebar { border-right: none; border-bottom: 1px solid rgba(255, 255, 255, 0.12); }
+        .form-grid { grid-template-columns: 1fr; }
+        .field.full { grid-column: span 1; }
       }
     </style>
   </head>
@@ -106,7 +173,61 @@
       <section class="content" aria-live="polite">
         <article id="camisetas" class="view active">
           <h2>CAMISETAS</h2>
-          <p class="placeholder">Pantalla vacía por ahora.</p>
+          <div class="action-row">
+            <button id="open-shirt-form" class="primary-btn" type="button">Agregar camiseta</button>
+          </div>
+
+          <form id="shirt-form" class="shirt-form" aria-label="Formulario para agregar camiseta">
+            <div class="form-grid">
+              <div class="field">
+                <label for="team">Equipo *</label>
+                <input id="team" name="team" type="text" required placeholder="Ej: Boca Juniors" />
+              </div>
+
+              <div class="field">
+                <label for="player">Jugador *</label>
+                <input id="player" name="player" type="text" required placeholder="Ej: Riquelme" />
+              </div>
+
+              <div class="field">
+                <label for="number">Dorsal *</label>
+                <input id="number" name="number" type="text" required placeholder="Ej: 10" />
+              </div>
+
+              <div class="field">
+                <label for="competition">Competencia (opcional)</label>
+                <select id="competition" name="competition">
+                  <option value="">Selecciona una opción</option>
+                  <option>Torneo Nacional</option>
+                  <option>Copa Nacional</option>
+                  <option>Libertadores</option>
+                  <option>Champions</option>
+                  <option>Mundial</option>
+                  <option>Copa América</option>
+                  <option>Eurocopa</option>
+                  <option>Otro</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="year">Año *</label>
+                <input id="year" name="year" type="number" min="1960" max="2026" required />
+                <span class="help">Desde 1960 hasta 2026.</span>
+              </div>
+
+              <div class="field">
+                <label for="type">Tipo de camiseta *</label>
+                <select id="type" name="type" required>
+                  <option value="">Selecciona un tipo</option>
+                  <option>Titular</option>
+                  <option>Suplente</option>
+                  <option>Tercera</option>
+                  <option>Cuarta</option>
+                  <option>Especial</option>
+                </select>
+              </div>
+            </div>
+          </form>
         </article>
 
         <article id="jugadores" class="view">
@@ -129,6 +250,8 @@
     <script>
       const menuButtons = document.querySelectorAll('.menu-btn');
       const views = document.querySelectorAll('.view');
+      const openFormButton = document.querySelector('#open-shirt-form');
+      const shirtForm = document.querySelector('#shirt-form');
 
       menuButtons.forEach((button) => {
         button.addEventListener('click', () => {
@@ -141,6 +264,10 @@
             view.classList.toggle('active', view.id === target);
           });
         });
+      });
+
+      openFormButton.addEventListener('click', () => {
+        shirtForm.classList.toggle('open');
       });
     </script>
   </body>
