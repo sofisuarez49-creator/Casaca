@@ -3,32 +3,161 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Casacas</title>
+    <title>Colección de camisetas</title>
     <style>
-      :root { color-scheme: dark; }
-      * { box-sizing: border-box; }
+      :root {
+        color-scheme: dark;
+        --bg: #062816;
+        --bg-soft: #0d3d23;
+        --card: #125632;
+        --card-soft: #1b6b3f;
+        --text: #eefaf2;
+        --muted: #c9dfcf;
+        --gold: #d4ad4f;
+        --gold-soft: #f1deaa;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
       body {
         margin: 0;
-        background: #0b1020;
-        color: #fff;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        min-height: 100vh;
+        font-family: "Segoe UI", system-ui, sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.06), transparent 45%),
+          repeating-linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.02),
+            rgba(255, 255, 255, 0.02) 2px,
+            transparent 2px,
+            transparent 72px
+          ),
+          linear-gradient(180deg, #052112 0%, var(--bg) 32%, #03150c 100%);
       }
-      main { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
-      .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
-      .shirt-card {
-        background: rgba(255,255,255,0.06);
-        border: 1px solid rgba(255,255,255,0.16);
-        border-radius: 14px;
-        padding: 1rem;
+
+      .app {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1.5rem;
       }
-      .shirt-card h3 { margin: 0 0 0.25rem; }
-      .shirt-events { margin: 0.75rem 0; padding-left: 1rem; }
-      button, input {
-        border: 1px solid rgba(255,255,255,0.22);
-        border-radius: 10px;
-        background: rgba(255,255,255,0.12);
-        color: #fff;
-        padding: 0.45rem 0.65rem;
+
+      .app-header {
+        background: linear-gradient(120deg, rgba(16, 90, 50, 0.92), rgba(8, 52, 28, 0.95));
+        border: 1px solid rgba(241, 222, 170, 0.35);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(1.5rem, 2vw, 2.1rem);
+        color: var(--gold-soft);
+        letter-spacing: 0.02em;
+      }
+
+      .resume {
+        margin-top: 0.75rem;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+
+      .filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        align-items: center;
+        background: rgba(10, 47, 27, 0.92);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0.9rem;
+        padding: 0.9rem;
+        margin-bottom: 1.15rem;
+      }
+
+      .filters label {
+        font-size: 0.86rem;
+        color: var(--muted);
+      }
+
+      .filters select,
+      .filters input {
+        border: 1px solid rgba(241, 222, 170, 0.3);
+        background: var(--bg-soft);
+        color: var(--text);
+        border-radius: 999px;
+        padding: 0.45rem 0.75rem;
+        min-width: 150px;
+      }
+
+      .cards {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      }
+
+      .card {
+        background: linear-gradient(180deg, var(--card-soft), var(--card));
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+      }
+
+      .card img {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .card-body {
+        padding: 0.95rem;
+      }
+
+      .card h2 {
+        margin: 0;
+        font-size: 1.2rem;
+      }
+
+      .meta {
+        margin-top: 0.7rem;
+        display: grid;
+        gap: 0.45rem;
+      }
+
+      .line {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.8rem;
+        font-size: 0.93rem;
+      }
+
+      .line strong {
+        color: var(--gold-soft);
+        font-weight: 700;
+      }
+
+      .shield {
+        display: inline-block;
+        padding: 0.28rem 0.65rem;
+        border-radius: 0.65rem 0.65rem 0.65rem 0.2rem;
+        background: linear-gradient(145deg, #b58a26, var(--gold));
+        color: #162712;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .events {
+        margin-top: 0.8rem;
+        padding-top: 0.7rem;
+        border-top: 1px dashed rgba(255, 255, 255, 0.18);
+        color: var(--muted);
+        font-size: 0.88rem;
       }
       .inline-form { margin-top: 0.65rem; display: flex; flex-direction: column; gap: 0.45rem; }
       .actions { display: flex; gap: 0.45rem; }
@@ -36,139 +165,78 @@
     </style>
   </head>
   <body>
-    <main>
-      <h1>Camisetas</h1>
-      <div id="shirts-list" class="grid" aria-live="polite"></div>
+    <main class="app" aria-label="Aplicación de colección de camisetas">
+      <header class="app-header">
+        <h1>Colección histórica de camisetas</h1>
+        <p class="resume">
+          Archivo personal de camisetas icónicas de clubes y selecciones: 24 camisetas, 14 compradas y 10 planificadas,
+          con foco en temporadas campeonas y jugadores emblemáticos.
+        </p>
+      </header>
+
+      <section class="filters" aria-label="Barra de filtros de camisetas">
+        <label>
+          Estado
+          <select aria-label="Filtrar por estado de compra">
+            <option>Todas</option>
+            <option>Comprada</option>
+            <option>Planificada</option>
+          </select>
+        </label>
+        <label>
+          Competición
+          <select aria-label="Filtrar por competición">
+            <option>Todas</option>
+            <option>Champions League</option>
+            <option>Copa del Mundo</option>
+            <option>Liga local</option>
+          </select>
+        </label>
+        <label>
+          Buscar jugador
+          <input type="search" placeholder="Ej: Messi" aria-label="Buscar camiseta por jugador" />
+        </label>
+      </section>
+
+      <section class="cards" aria-label="Grid de tarjetas de camisetas">
+        <article class="card" aria-label="Tarjeta de camiseta de Lionel Messi">
+          <img src="https://images.unsplash.com/photo-1517466787929-bc90951d0974?auto=format&fit=crop&w=1200&q=80" alt="Camiseta azulgrana en exposición" />
+          <div class="card-body">
+            <header>
+              <h2>Camiseta</h2>
+              <span class="shield">Comprada</span>
+            </header>
+            <div class="meta">
+              <p class="line"><span>Jugador</span><strong>Lionel Messi</strong></p>
+              <p class="line"><span>Equipo / selección</span><strong>FC Barcelona</strong></p>
+              <p class="line"><span>Dorsal</span><strong>10</strong></p>
+              <p class="line"><span>Temporada</span><strong>2010/2011</strong></p>
+              <p class="line"><span>Campeonatos</span><strong>Champions + Liga</strong></p>
+              <p class="line"><span>Títulos</span><strong>2 títulos oficiales</strong></p>
+            </div>
+            <p class="events">Acontecimientos extra: final de Wembley 2011, balón de oro del jugador ese año.</p>
+          </div>
+        </article>
+
+        <article class="card" aria-label="Tarjeta de camiseta de Kylian Mbappé">
+          <img src="https://images.unsplash.com/photo-1552667466-07770ae110d0?auto=format&fit=crop&w=1200&q=80" alt="Camiseta blanca de selección en percha" />
+          <div class="card-body">
+            <header>
+              <h2>Camiseta</h2>
+              <span class="shield">Planificada</span>
+            </header>
+            <div class="meta">
+              <p class="line"><span>Jugador</span><strong>Kylian Mbappé</strong></p>
+              <p class="line"><span>Equipo / selección</span><strong>Francia</strong></p>
+              <p class="line"><span>Dorsal</span><strong>10</strong></p>
+              <p class="line"><span>Temporada</span><strong>Mundial 2022</strong></p>
+              <p class="line"><span>Campeonatos</span><strong>Subcampeón Copa del Mundo</strong></p>
+              <p class="line"><span>Títulos</span><strong>Botín de Oro del torneo</strong></p>
+            </div>
+            <p class="events">Acontecimientos extra: hat-trick en final mundialista y liderazgo ofensivo del torneo.</p>
+          </div>
+        </article>
+      </section>
     </main>
-
-    <script>
-      const schema = {
-        shirts: [
-          { id: "shirt-1", season: "2023/24", player: "Messi", extraEventIds: ["event-1"] },
-          { id: "shirt-2", season: "2008/09", player: "Iniesta", extraEventIds: [] },
-        ],
-        events: [{ id: "event-1", name: "Debut en final" }],
-      };
-
-      const uiStateByShirt = {};
-      const shirtsList = document.getElementById("shirts-list");
-
-      const createUniqueEventId = () => {
-        if (typeof crypto !== "undefined" && crypto.randomUUID) {
-          return `event-${crypto.randomUUID()}`;
-        }
-        return `event-${Date.now()}-${Math.floor(Math.random() * 1_000_000)}`;
-      };
-
-      const getEventsForShirt = (shirt) =>
-        shirt.extraEventIds
-          .map((eventId) => schema.events.find((event) => event.id === eventId))
-          .filter(Boolean);
-
-      const renderShirtCard = (shirtId) => {
-        const shirt = schema.shirts.find((item) => item.id === shirtId);
-        if (!shirt) return;
-
-        const state = uiStateByShirt[shirt.id] ?? { formOpen: false, error: "" };
-        uiStateByShirt[shirt.id] = state;
-
-        const currentCard = shirtsList.querySelector(`[data-shirt-id="${shirt.id}"]`);
-        const card = document.createElement("article");
-        card.className = "shirt-card";
-        card.dataset.shirtId = shirt.id;
-
-        const events = getEventsForShirt(shirt);
-        card.innerHTML = `
-          <h3>${shirt.player}</h3>
-          <p>Temporada: ${shirt.season}</p>
-          <strong>Acontecimientos</strong>
-          <ul class="shirt-events">
-            ${events.length ? events.map((event) => `<li>${event.name}</li>`).join("") : "<li>Sin acontecimientos</li>"}
-          </ul>
-          <button type="button" data-action="open-form">Añadir acontecimiento</button>
-          ${state.formOpen
-            ? `<form class="inline-form" data-action="add-event-form">
-                <input name="eventName" type="text" placeholder="Nombre del acontecimiento" autocomplete="off" />
-                <div class="actions">
-                  <button type="submit">Guardar</button>
-                  <button type="button" data-action="cancel-form">Cancelar</button>
-                </div>
-                <p class="error">${state.error || ""}</p>
-              </form>`
-            : ""}
-        `;
-
-        if (currentCard) {
-          currentCard.replaceWith(card);
-        } else {
-          shirtsList.appendChild(card);
-        }
-      };
-
-      const renderAllShirts = () => {
-        shirtsList.innerHTML = "";
-        schema.shirts.forEach((shirt) => renderShirtCard(shirt.id));
-      };
-
-      shirtsList.addEventListener("click", (event) => {
-        const card = event.target.closest(".shirt-card");
-        if (!card) return;
-
-        const shirtId = card.dataset.shirtId;
-        const state = uiStateByShirt[shirtId] ?? { formOpen: false, error: "" };
-        uiStateByShirt[shirtId] = state;
-
-        const action = event.target.dataset.action;
-        if (action === "open-form") {
-          state.formOpen = true;
-          state.error = "";
-          renderShirtCard(shirtId);
-        }
-
-        if (action === "cancel-form") {
-          state.formOpen = false;
-          state.error = "";
-          renderShirtCard(shirtId);
-        }
-      });
-
-      shirtsList.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const form = event.target;
-        if (form.dataset.action !== "add-event-form") return;
-
-        const card = form.closest(".shirt-card");
-        const shirtId = card.dataset.shirtId;
-        const shirt = schema.shirts.find((item) => item.id === shirtId);
-        const state = uiStateByShirt[shirtId];
-        const rawName = form.eventName.value;
-        const eventName = rawName.trim();
-
-        if (!eventName) {
-          state.error = "El nombre es obligatorio.";
-          renderShirtCard(shirtId);
-          return;
-        }
-
-        const duplicate = getEventsForShirt(shirt)
-          .some((shirtEvent) => shirtEvent.name.toLowerCase() === eventName.toLowerCase());
-
-        if (duplicate) {
-          state.error = "Este acontecimiento ya existe para esta camiseta.";
-          renderShirtCard(shirtId);
-          return;
-        }
-
-        const newEvent = { id: createUniqueEventId(), name: eventName };
-        schema.events.push(newEvent);
-        shirt.extraEventIds.push(newEvent.id);
-
-        state.formOpen = false;
-        state.error = "";
-        renderShirtCard(shirtId);
-      });
-
-      renderAllShirts();
-    </script>
   </body>
 </html>
