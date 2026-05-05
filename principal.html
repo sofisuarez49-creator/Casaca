@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Juego Principal</title>
+    <link rel="stylesheet" href="principal.css" />
+  </head>
+  <body>
+    <main class="game">
+      <h2>Duelo de Personajes (Mejor de 3)</h2>
+      <p>Elige tu personaje y combate contra un rival aleatorio.</p>
+
+      <section id="characters" class="cards"></section>
+
+      <section class="actions">
+        <button id="fightBtn" disabled>Iniciar combate</button>
+        <button id="resetBtn">Reiniciar</button>
+      </section>
+
+      <section class="scoreboard">
+        <p><strong>Jugador:</strong> <span id="playerScore">0</span></p>
+        <p><strong>Rival:</strong> <span id="enemyScore">0</span></p>
+        <p><strong>Ronda:</strong> <span id="round">0</span>/3</p>
+      </section>
+
+      <section id="log" class="log" aria-live="polite"></section>
+    </main>
+
+    <script src="principal.js"></script>
+  </body>
+</html>
