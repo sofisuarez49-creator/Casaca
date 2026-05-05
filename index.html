@@ -53,6 +53,13 @@
       .view { display: none; }
       .view.active { display: block; }
 
+      .game-frame {
+        width: 100%;
+        min-height: 72vh;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+      }
+
       @media (max-width: 700px) {
         .app { grid-template-columns: 1fr; }
       }
@@ -62,14 +69,20 @@
     <main class="app">
       <aside class="sidebar" aria-label="Menú lateral">
         <nav class="menu">
-          <button class="tab active" data-view="mapa">Mapa</button>
+          <button class="tab active" data-view="principal">Principal</button>
+          <button class="tab" data-view="mapa">Mapa</button>
           <button class="tab" data-view="personajes">Personajes</button>
           <button class="tab" data-view="historia">Historia</button>
         </nav>
       </aside>
 
       <section class="content" aria-live="polite">
-        <article id="mapa" class="view active">
+        <article id="principal" class="view active">
+          <h1>Principal</h1>
+          <iframe class="game-frame" src="principal.html" title="Juego Principal"></iframe>
+        </article>
+
+        <article id="mapa" class="view">
           <h1>Mapa</h1>
         </article>
 
