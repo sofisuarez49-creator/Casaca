@@ -64,3 +64,38 @@ button:disabled {
   min-height: 160px;
   border: 1px solid #ddd;
 }
+
+
+.mapa {
+  margin-top: 1.5rem;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.mapa h3 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.mapa__wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mapa__image {
+  display: block;
+  width: 100%;
+  max-width: 860px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+@media (max-width: 768px) {
+  .mapa {
+    padding: 0.75rem;
+  }
+}
